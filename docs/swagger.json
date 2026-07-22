@@ -69,8 +69,8 @@
         "type": "object",
         "required": ["profile", "action", "text"],
         "properties": {
-          "profile": { "type": "string", "example": "support_ticket", "description": "email | support_ticket | inline_text" },
-          "action": { "type": "string", "example": "rewrite", "description": "rewrite | summarize | translate | improve | expand | shorten | proofread" },
+          "profile": { "type": "string", "example": "jira_story", "description": "email | support_ticket | inline_text | jira_story" },
+          "action": { "type": "string", "example": "generate", "description": "rewrite | summarize | translate | improve | expand | shorten | proofread | generate | create" },
           "tone": { "type": "string", "example": "professional" },
           "language": { "type": "string", "example": "english" },
           "text": { "type": "string", "example": "issue fixed check now" },

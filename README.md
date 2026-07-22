@@ -11,8 +11,8 @@ A production-ready, high-performance enterprise AI Platform written in Go 1.24+ 
 - **Multi-Server Ollama Load Balancing**: Includes a **Least-in-Flight** request distributor across multiple backend Ollama nodes to prevent any single GPU/server bottleneck.
 - **YAML & Environment Configuration**: Configurable via `config/config.yaml` with environment variable overrides (`PORT`, `API_KEY`, `OLLAMA_URL`, etc.).
 - **Plugin Architecture**:
-  - **Profiles**: `email`, `support_ticket`, `inline_text`.
-  - **Actions**: `rewrite`, `summarize`, `translate`, `improve`, `expand`, `shorten`, `proofread`.
+  - **Profiles**: `email`, `support_ticket`, `inline_text`, `jira_story`.
+  - **Actions**: `rewrite`, `summarize`, `translate`, `improve`, `expand`, `shorten`, `proofread`, `generate`, `create`.
 - **Prompt Engine**: File-based markdown prompt renderer supporting dynamic placeholders (`{{TEXT}}`, `{{TITLE}}`, `{{CONVERSATION}}`, `{{TONE}}`, `{{LANGUAGE}}`, `{{SIGNATURE}}`, `{{CUSTOM_CONTEXT}}`).
 - **Enterprise Middleware**: Bearer API Key authentication, IP rate limiting, Request ID tracing (`X-Request-ID`), Panic recovery, and structured logging.
 - **Future Features Ready**: Interface stubs ready for Speech (Whisper/Piper), Document Summarization, OCR, and Qdrant RAG.
@@ -135,6 +135,37 @@ Content-Type: application/json
     "action": "rewrite",
     "model": "qwen3:8b",
     "processing_ms": 340
+  }
+}
+```
+
+### Jira Story Generation (`profile: "jira_story"`, `action: "generate"`)
+
+**Request**:
+
+```json
+POST /api/v1/write
+Authorization: Bearer krea-secret-ai-key-2026
+Content-Type: application/json
+
+{
+  "profile": "jira_story",
+  "action": "generate",
+  "text": "Allow users to reset their password via SMS OTP verification"
+}
+```
+
+**Response**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "result": "Title: Password Reset via SMS OTP Verification\n\nDescription:\nAs a registered user,\nI want to reset my password using an SMS OTP code,\nSo that I can securely regain access to my account without email verification.\n\nBackground & Context:\nUsers often lose access to their registered email address. SMS OTP provides a secure alternative authentication channel.\n\nAcceptance Criteria:\n1. Given a user on the forgot password page, When they enter their registered mobile number, Then an 8-digit OTP is sent via SMS.\n2. Given the user receives the OTP, When they enter valid OTP within 5 minutes, Then they are prompted to set a new password.\n3. Given an invalid or expired OTP is entered, Then an appropriate error message is displayed.",
+    "profile": "jira_story",
+    "action": "generate",
+    "model": "qwen2.5:0.5b",
+    "processing_ms": 480
   }
 }
 ```

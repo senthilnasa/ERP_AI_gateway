@@ -16,6 +16,7 @@ import (
 	"github.com/senthilnasa/ERP_AI_gateway/internal/profile"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/profile/email"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/profile/inline"
+	"github.com/senthilnasa/ERP_AI_gateway/internal/profile/jira"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/profile/ticket"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/prompt"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/service"
@@ -31,12 +32,17 @@ func setupTestRouter(t *testing.T) *gin.Engine {
 	os.MkdirAll(emailDir, 0755)
 	os.WriteFile(emailDir+"/rewrite.md", []byte("Rewrite: {{TEXT}}"), 0644)
 
+	jiraDir := promptsDir + "/jira_story"
+	os.MkdirAll(jiraDir, 0755)
+	os.WriteFile(jiraDir+"/generate.md", []byte("Generate Jira Story: {{TEXT}}"), 0644)
+
 	promptEngine := prompt.NewEngine(promptsDir)
 
 	profileReg := profile.NewRegistry()
 	profileReg.Register(email.New())
 	profileReg.Register(ticket.New())
 	profileReg.Register(inline.New())
+	profileReg.Register(jira.New())
 
 	actionReg := action.NewRegistry()
 
@@ -211,5 +217,31 @@ func TestFutureStubsNotImplemented(t *testing.T) {
 
 	if w.Code != http.StatusNotImplemented {
 		t.Errorf("expected 501 Not Implemented, got %d", w.Code)
+	}
+}
+
+func TestJiraStoryGeneration(t *testing.T) {
+	router := setupTestRouter(t)
+
+	w := httptest.NewRecorder()
+	reqBody, _ := json.Marshal(models.WriteRequest{
+		Profile: "jira_story",
+		Action:  "generate",
+		Text:    "Allow users to reset their password via SMS OTP",
+	})
+	req, _ := http.NewRequest("POST", "/api/v1/write", bytes.NewBuffer(reqBody))
+	req.Header.Set("Authorization", "Bearer test-api-key")
+	req.Header.Set("Content-Type", "application/json")
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200 OK for jira_story, got %d: %s", w.Code, w.Body.String())
+	}
+
+	var resp models.ApiResponse
+	json.Unmarshal(w.Body.Bytes(), &resp)
+
+	if !resp.Success {
+		t.Errorf("expected success true, got false")
 	}
 }
