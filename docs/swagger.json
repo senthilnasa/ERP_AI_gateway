@@ -1,0 +1,274 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "OneERP Enterprise AI Gateway API",
+    "description": "Production-ready enterprise AI gateway for ERP applications featuring multi-server Ollama Least-in-Flight load balancing, profile plugin architecture, prompt rendering, and stubbed future feature APIs.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "APIKey",
+        "description": "Enter your Bearer API key (e.g. krea-secret-ai-key-2026)"
+      }
+    },
+    "schemas": {
+      "ConversationMessage": {
+        "type": "object",
+        "properties": {
+          "role": { "type": "string", "example": "user" },
+          "message": { "type": "string", "example": "Cannot login to ERP system" }
+        }
+      },
+      "RequestContext": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string", "example": "Unable to Login" },
+          "conversation": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ConversationMessage" }
+          }
+        }
+      },
+      "RequestOptions": {
+        "type": "object",
+        "properties": {
+          "signature": { "type": "string", "example": "IT Support Team" },
+          "length": { "type": "string", "example": "medium" },
+          "model": { "type": "string", "example": "qwen3:8b" }
+        }
+      },
+      "RequestMetadata": {
+        "type": "object",
+        "properties": {
+          "application": { "type": "string", "example": "OneERP" },
+          "module": { "type": "string", "example": "Helpdesk" },
+          "tenant_id": { "type": "string", "example": "KREA" },
+          "user_id": { "type": "string", "example": "1001" },
+          "department": { "type": "string", "example": "IT" },
+          "request_id": { "type": "string", "example": "550e8400-e29b-41d4-a716-446655440000" }
+        }
+      },
+      "WriteRequest": {
+        "type": "object",
+        "required": ["profile", "action", "text"],
+        "properties": {
+          "profile": { "type": "string", "example": "support_ticket", "description": "email | support_ticket | inline_text" },
+          "action": { "type": "string", "example": "rewrite", "description": "rewrite | summarize | translate | improve | expand | shorten | proofread" },
+          "tone": { "type": "string", "example": "professional" },
+          "language": { "type": "string", "example": "english" },
+          "text": { "type": "string", "example": "issue fixed check now" },
+          "context": { "$ref": "#/components/schemas/RequestContext" },
+          "options": { "$ref": "#/components/schemas/RequestOptions" },
+          "metadata": { "$ref": "#/components/schemas/RequestMetadata" }
+        }
+      },
+      "WriteResponseData": {
+        "type": "object",
+        "properties": {
+          "result": { "type": "string", "example": "Dear User,\n\nWe have resolved the login issue associated with your account. Please verify and let us know if you encounter any further difficulties.\n\nBest regards,\nIT Support Team" },
+          "profile": { "type": "string", "example": "support_ticket" },
+          "action": { "type": "string", "example": "rewrite" },
+          "model": { "type": "string", "example": "qwen3:8b" },
+          "processing_ms": { "type": "integer", "example": 340 }
+        }
+      },
+      "ApiResponseSuccess": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "data": { "$ref": "#/components/schemas/WriteResponseData" }
+        }
+      },
+      "ApiErrorDetail": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string", "example": "UNAUTHORIZED" },
+          "message": { "type": "string", "example": "Invalid Bearer API Key" },
+          "request_id": { "type": "string", "example": "550e8400-e29b-41d4-a716-446655440000" }
+        }
+      },
+      "ApiResponseError": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "error": { "$ref": "#/components/schemas/ApiErrorDetail" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health Check & Backend Status",
+        "description": "Returns operational health and live multi-server Ollama node statistics.",
+        "responses": {
+          "200": {
+            "description": "System Healthy",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": "UP",
+                  "service": "OneERP AI Gateway",
+                  "ollama_backends": [
+                    { "name": "ollama-node-1", "url": "http://localhost:11434", "in_flight": 0, "total_requests": 5, "error_count": 0, "is_healthy": true },
+                    { "name": "ollama-node-2", "url": "http://localhost:11435", "in_flight": 0, "total_requests": 5, "error_count": 0, "is_healthy": true }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/version": {
+      "get": {
+        "summary": "Version Info",
+        "description": "Returns current build and version info.",
+        "responses": {
+          "200": {
+            "description": "Version metadata"
+          }
+        }
+      }
+    },
+    "/profiles": {
+      "get": {
+        "summary": "List Registered Profiles",
+        "description": "Returns list of registered AI profiles.",
+        "responses": {
+          "200": {
+            "description": "Profiles list",
+            "content": {
+              "application/json": {
+                "example": { "profiles": ["email", "support_ticket", "inline_text"] }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/actions": {
+      "get": {
+        "summary": "List Registered Actions",
+        "description": "Returns list of registered AI actions.",
+        "responses": {
+          "200": {
+            "description": "Actions list",
+            "content": {
+              "application/json": {
+                "example": { "actions": ["rewrite", "summarize", "translate", "improve", "expand", "shorten", "proofread"] }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models": {
+      "get": {
+        "summary": "List Available Models & Backend Nodes",
+        "responses": {
+          "200": {
+            "description": "Available models and node stats"
+          }
+        }
+      }
+    },
+    "/api/v1/write": {
+      "post": {
+        "summary": "AI Write & Rewrite Endpoint",
+        "description": "Primary endpoint for AI email, support ticket reply, and inline text generation.",
+        "security": [
+          { "BearerAuth": [] }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WriteRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful AI Processing",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseSuccess" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized / Missing API Key",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseError" }
+              }
+            }
+          },
+          "422": {
+            "description": "Processing Failed",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiResponseError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/speech/transcribe": {
+      "post": {
+        "summary": "Speech-to-Text Transcribe (Whisper)",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "501": { "description": "Not Implemented (Scheduled for Future Features phase)" }
+        }
+      }
+    },
+    "/api/v1/speech/synthesize": {
+      "post": {
+        "summary": "Text-to-Speech Synthesize (Piper)",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "501": { "description": "Not Implemented (Scheduled for Future Features phase)" }
+        }
+      }
+    },
+    "/api/v1/document/summarize": {
+      "post": {
+        "summary": "Document Summarization",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "501": { "description": "Not Implemented (Scheduled for Future Features phase)" }
+        }
+      }
+    },
+    "/api/v1/image/analyze": {
+      "post": {
+        "summary": "Image OCR & Understanding",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "501": { "description": "Not Implemented (Scheduled for Future Features phase)" }
+        }
+      }
+    },
+    "/api/v1/rag/query": {
+      "post": {
+        "summary": "RAG Knowledge Base Query (Qdrant)",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "501": { "description": "Not Implemented (Scheduled for Future Features phase)" }
+        }
+      }
+    }
+  }
+}

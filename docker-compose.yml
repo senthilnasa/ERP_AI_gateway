@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: oneerp-ai-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - API_KEY=krea-secret-ai-key-2026
+      - OLLAMA_URL=http://ollama-1:11434,http://ollama-2:11434
+      - MODEL=qwen3:8b
+      - LOG_LEVEL=info
+      - PROMPT_DIRECTORY=./prompts
+      - REQUEST_TIMEOUT=60
+    depends_on:
+      - ollama-1
+      - ollama-2
+    restart: unless-stopped
+
+  ollama-1:
+    image: ollama/ollama:latest
+    container_name: ollama-node-1
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_storage_1:/root/.ollama
+    restart: unless-stopped
+
+  ollama-2:
+    image: ollama/ollama:latest
+    container_name: ollama-node-2
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama_storage_2:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  ollama_storage_1:
+  ollama_storage_2:

@@ -1,0 +1,33 @@
+# Enterprise AI Platform Gateway Example Configuration
+# Copy this file to config/config.yaml for local/production setup
+
+server:
+  port: 8080
+  request_timeout_seconds: 60
+  max_payload_size_mb: 10
+  log_level: "info" # debug, info, warn, error
+
+security:
+  api_key: "senthil-secret-ai-key-2026"
+  rate_limit:
+    requests_per_minute: 100
+    burst: 20
+
+prompt:
+  directory: "./prompts"
+
+llm:
+  provider: "ollama" # "ollama" or "mock"
+  default_model: "qwen3:8b"
+  load_balancing_strategy: "least_in_flight" # "least_in_flight" or "round_robin"
+
+  # Multi-server Ollama configuration for load balancing
+  ollama_servers:
+    - name: "ollama-node-1"
+      url: "http://localhost:11434"
+      weight: 1
+      max_concurrent: 10
+    - name: "ollama-node-2"
+      url: "http://localhost:11435"
+      weight: 1
+      max_concurrent: 10
