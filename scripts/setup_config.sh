@@ -7,11 +7,39 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$SCRIPT_DIR"
 
 echo "=========================================="
-echo "   OneERP AI Gateway - Config Generator   "
+echo "   ERP AI Gateway - Config Generator     "
 echo "=========================================="
 
 CONFIG_FILE="config/config.yaml"
 mkdir -p config
+
+# Check for force overwrite flag (-f or --force)
+FORCE_OVERWRITE=false
+AUTO_YES=false
+
+for arg in "$@"; do
+    case "$arg" in
+        -f|--force)
+            FORCE_OVERWRITE=true
+            ;;
+        -y|--default)
+            AUTO_YES=true
+            ;;
+    esac
+done
+
+if [ ! -t 0 ]; then
+    AUTO_YES=true
+fi
+
+# IMPORTANT FIX: Preserve existing config/config.yaml unless force flag is passed
+if [ -f "$CONFIG_FILE" ] && [ "$FORCE_OVERWRITE" = false ]; then
+    echo "✔ Active configuration file '$CONFIG_FILE' already exists."
+    echo "  Preserving your existing configuration (API keys, ports, node URLs)."
+    echo "  (Use ./scripts/setup_config.sh --force to recreate if needed)."
+    echo "=========================================="
+    exit 0
+fi
 
 # Function to generate a random secret key
 generate_random_key() {
@@ -22,23 +50,17 @@ generate_random_key() {
     fi
 }
 
-# Check for non-interactive flag (-y) or non-TTY environment
-AUTO_YES=false
-if [ "$1" = "-y" ] || [ "$1" = "--default" ] || [ ! -t 0 ]; then
-    AUTO_YES=true
-fi
-
 # Default parameter values
 DEFAULT_PORT=8080
-DEFAULT_TIMEOUT=60
+DEFAULT_TIMEOUT=120
 DEFAULT_MAX_PAYLOAD=10
 DEFAULT_LOG_LEVEL="info"
-DEFAULT_RATE_LIMIT=100
-DEFAULT_MODEL="qwen3:8b"
-DEFAULT_OLLAMA_URLS="http://localhost:11434,http://localhost:11435"
+DEFAULT_RATE_LIMIT=1000
+DEFAULT_MODEL="qwen2.5:0.5b"
+DEFAULT_OLLAMA_URLS="http://10.10.3.74:11434"
 
 if [ "$AUTO_YES" = true ]; then
-    echo "Running in automatic/defaults mode..."
+    echo "Creating $CONFIG_FILE with defaults..."
     PORT=${PORT:-$DEFAULT_PORT}
     LOG_LEVEL=${LOG_LEVEL:-$DEFAULT_LOG_LEVEL}
     MODEL=${MODEL:-$DEFAULT_MODEL}
@@ -92,7 +114,7 @@ security:
   api_key: "$API_KEY"
   rate_limit:
     requests_per_minute: $DEFAULT_RATE_LIMIT
-    burst: 20
+    burst: 100
 
 prompt:
   directory: "./prompts"
@@ -115,7 +137,7 @@ for url in "${ADDR[@]}"; do
     - name: "ollama-node-$NODE_INDEX"
       url: "$TRIMMED_URL"
       weight: 1
-      max_concurrent: 10
+      max_concurrent: 100
 EOF
         NODE_INDEX=$((NODE_INDEX + 1))
     fi
