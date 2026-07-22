@@ -48,6 +48,8 @@ func NewRegistry() *Registry {
 	r.Register(New("expand", "Elaborates and adds details to text"))
 	r.Register(New("shorten", "Condenses text while maintaining key points"))
 	r.Register(New("proofread", "Fixes typos, spelling, and grammar errors"))
+	r.Register(New("generate", "Generates structured content such as Jira stories, specifications, or documents"))
+	r.Register(New("create", "Creates structured items from plain text descriptions"))
 
 	return r
 }

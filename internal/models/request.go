@@ -38,11 +38,15 @@ type WriteRequest struct {
 }
 
 type WriteResponseData struct {
-	Result       string `json:"result"`
-	Profile      string `json:"profile"`
-	Action       string `json:"action"`
-	Model        string `json:"model"`
-	ProcessingMS int64  `json:"processing_ms"`
+	Result             string `json:"result"`
+	Title              string `json:"title,omitempty"`
+	Description        string `json:"description,omitempty"`
+	AcceptanceCriteria string `json:"acceptance_criteria,omitempty"`
+	Raw                string `json:"raw,omitempty"`
+	Profile            string `json:"profile"`
+	Action             string `json:"action"`
+	Model              string `json:"model"`
+	ProcessingMS       int64  `json:"processing_ms"`
 }
 
 type ApiResponse struct {

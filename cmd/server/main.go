@@ -18,6 +18,7 @@ import (
 	"github.com/senthilnasa/ERP_AI_gateway/internal/profile"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/profile/email"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/profile/inline"
+	"github.com/senthilnasa/ERP_AI_gateway/internal/profile/jira"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/profile/ticket"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/prompt"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/service"
@@ -61,6 +62,7 @@ func main() {
 	profileRegistry.Register(email.New())
 	profileRegistry.Register(ticket.New())
 	profileRegistry.Register(inline.New())
+	profileRegistry.Register(jira.New())
 	log.Info("Registered Profiles: %v", profileRegistry.ListNames())
 
 	// 4. Action Registry Setup

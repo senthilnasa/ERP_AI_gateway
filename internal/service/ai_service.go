@@ -9,6 +9,7 @@ import (
 	"github.com/senthilnasa/ERP_AI_gateway/internal/llm"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/models"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/profile"
+	"github.com/senthilnasa/ERP_AI_gateway/internal/profile/jira"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/prompt"
 )
 
@@ -74,13 +75,23 @@ func (s *AIService) ProcessWrite(ctx context.Context, req *models.WriteRequest) 
 
 	elapsedMs := time.Since(start).Milliseconds()
 
-	return &models.WriteResponseData{
+	resData := &models.WriteResponseData{
 		Result:       finalResult,
 		Profile:      req.Profile,
 		Action:       req.Action,
 		Model:        targetModel,
 		ProcessingMS: elapsedMs,
-	}, nil
+	}
+
+	if req.Profile == "jira_story" {
+		t, d, ac := jira.ParseJiraStorySections(finalResult)
+		resData.Title = t
+		resData.Description = d
+		resData.AcceptanceCriteria = ac
+		resData.Raw = rawLLMOutput
+	}
+
+	return resData, nil
 }
 
 func (s *AIService) GetProfiles() []string {

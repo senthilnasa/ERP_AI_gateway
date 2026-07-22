@@ -11,8 +11,8 @@ A production-ready, high-performance enterprise AI Platform written in Go 1.24+ 
 - **Multi-Server Ollama Load Balancing**: Includes a **Least-in-Flight** request distributor across multiple backend Ollama nodes to prevent any single GPU/server bottleneck.
 - **YAML & Environment Configuration**: Configurable via `config/config.yaml` with environment variable overrides (`PORT`, `API_KEY`, `OLLAMA_URL`, etc.).
 - **Plugin Architecture**:
-  - **Profiles**: `email`, `support_ticket`, `inline_text`.
-  - **Actions**: `rewrite`, `summarize`, `translate`, `improve`, `expand`, `shorten`, `proofread`.
+  - **Profiles**: `email`, `support_ticket`, `inline_text`, `jira_story`.
+  - **Actions**: `rewrite`, `summarize`, `translate`, `improve`, `expand`, `shorten`, `proofread`, `generate`, `create`.
 - **Prompt Engine**: File-based markdown prompt renderer supporting dynamic placeholders (`{{TEXT}}`, `{{TITLE}}`, `{{CONVERSATION}}`, `{{TONE}}`, `{{LANGUAGE}}`, `{{SIGNATURE}}`, `{{CUSTOM_CONTEXT}}`).
 - **Enterprise Middleware**: Bearer API Key authentication, IP rate limiting, Request ID tracing (`X-Request-ID`), Panic recovery, and structured logging.
 - **Future Features Ready**: Interface stubs ready for Speech (Whisper/Piper), Document Summarization, OCR, and Qdrant RAG.
