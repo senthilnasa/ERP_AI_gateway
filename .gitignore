@@ -1,10 +1,5 @@
 # Compiled binaries
-server
-*.exe
-*.exe.manifest
-*.dll
-*.so
-*.dylib
+/server
 bin/
 
 # Go test binaries and coverage
