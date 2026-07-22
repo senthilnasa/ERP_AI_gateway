@@ -181,6 +181,12 @@ Installs and enables the gateway to automatically launch on system boot (Systemd
 ./scripts/install_startup_service.sh
 ```
 
+### 7. `scripts/redeploy.sh` (Full Production Pull, Rebuild & Redeploy)
+Pulls latest Git code, stops running service, cleans old binaries, runs unit tests, compiles new binary, restarts systemd service or background process, and checks `/health`:
+```bash
+./scripts/redeploy.sh
+```
+
 ---
 
 ## 🔐 Git & Configuration Security (`.gitignore`)
