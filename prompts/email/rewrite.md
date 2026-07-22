@@ -14,4 +14,6 @@ Original Email Text:
 
 Requirements:
 - Preserve all key information and business facts.
-- Output ONLY the rewritten email content. Do not include markdown code block quotes or extra conversational commentary.
+- Output ONLY the final response text.
+- DO NOT wrap the output in code blocks (e.g. ```python), code fences, quotes, or markdown tags.
+- DO NOT include conversational filler, meta-talk (e.g. "Understood! I'll respond in..."), or closing notes (e.g. "Please let me know if...").

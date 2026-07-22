@@ -19,4 +19,6 @@ Draft Response:
 Requirements:
 - Ensure the response addresses the user's issue accurately based on context.
 - Use a polite, supportive, professional tone suitable for customer service.
-- Output ONLY the final response content. Do not output markdown code blocks or commentary.
+- Output ONLY the final response text.
+- DO NOT wrap the output in code blocks (e.g. ```python), code fences, quotes, or markdown tags.
+- DO NOT include conversational filler, meta-talk (e.g. "Understood! I'll respond in..."), or closing notes (e.g. "Please let me know if...").

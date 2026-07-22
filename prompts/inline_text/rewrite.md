@@ -13,4 +13,6 @@ Original Text:
 
 Requirements:
 - Improve clarity, flow, and grammatical accuracy.
-- Return ONLY the rewritten text without surrounding commentary or quote blocks.
+- Output ONLY the final response text.
+- DO NOT wrap the output in code blocks (e.g. ```python), code fences, quotes, or markdown tags.
+- DO NOT include conversational filler, meta-talk (e.g. "Understood! I'll respond in..."), or closing notes (e.g. "Please let me know if...").

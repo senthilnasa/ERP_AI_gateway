@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/senthilnasa/ERP_AI_gateway/internal/models"
+	"github.com/senthilnasa/ERP_AI_gateway/internal/profile"
 	"github.com/senthilnasa/ERP_AI_gateway/internal/prompt"
 )
 
@@ -52,20 +53,7 @@ func (p *JiraStoryProfile) BuildPrompt(req *models.WriteRequest, engine *prompt.
 }
 
 func (p *JiraStoryProfile) ParseResponse(raw string) (string, error) {
-	cleaned := strings.TrimSpace(raw)
-	if strings.HasPrefix(cleaned, "```") {
-		lines := strings.Split(cleaned, "\n")
-		if len(lines) >= 2 {
-			if strings.HasPrefix(lines[0], "```") {
-				lines = lines[1:]
-			}
-			if len(lines) > 0 && strings.HasPrefix(lines[len(lines)-1], "```") {
-				lines = lines[:len(lines)-1]
-			}
-			cleaned = strings.TrimSpace(strings.Join(lines, "\n"))
-		}
-	}
-	return cleaned, nil
+	return profile.CleanLLMOutput(raw), nil
 }
 
 // ParseJiraStorySections parses a generated Jira story string into title, description, and acceptance criteria sections.
