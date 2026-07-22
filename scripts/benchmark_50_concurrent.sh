@@ -2,8 +2,19 @@
 
 # Stress test 50 concurrent requests with different payloads against AI Gateway
 
-URL="http://localhost:8080/api/v1/write"
-API_KEY="krea-secret-ai-key-2026"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CONFIG_FILE="${CONFIG_FILE:-$SCRIPT_DIR/config/config.yaml}"
+
+URL="${URL:-http://localhost:8080/api/v1/write}"
+
+# Dynamically load API Key from config/config.yaml if not set in environment
+if [ -z "$API_KEY" ]; then
+    if [ -f "$CONFIG_FILE" ]; then
+        API_KEY=$(awk '/security:/{f=1} f && /api_key:/{sub(/.*api_key:[ \t]*/, ""); gsub(/^["'\''`]+|["'\''`]+$/, ""); print; exit}' "$CONFIG_FILE")
+    fi
+fi
+API_KEY="${API_KEY:-krea-secret-ai-key-2026}"
+
 MODEL_NAME="${1:-qwen2.5:0.5b}"
 
 echo "=========================================="
