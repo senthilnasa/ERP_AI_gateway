@@ -2,14 +2,14 @@ package profile
 
 import "testing"
 
-func TestCleanLLMOutput(t *testing.T) {
+func TestCleanLLMOutputEdgeCases(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    string
 		expected string
 	}{
 		{
-			name: "Code block inside conversational wrapper",
+			name: "Python code block inside conversational wrapper with bold quotes",
 			input: "Understood! I'll respond in the following format:\n\n" +
 				"```python\n" +
 				"\"**This is test ticket and I'm closing this**\"\n" +
@@ -18,21 +18,36 @@ func TestCleanLLMOutput(t *testing.T) {
 			expected: "This is test ticket and I'm closing this",
 		},
 		{
-			name: "Plain text with intro and outro",
-			input: "Here is the revised message:\n\n" +
-				"Dear Customer, your ticket has been resolved.\n\n" +
+			name: "Triple quotes enclosure",
+			input: "Sure, here is the text:\n\n" +
+				"\"\"\"This is a test ticket response\"\"\"\n\n" +
 				"Hope this helps!",
-			expected: "Dear Customer, your ticket has been resolved.",
+			expected: "This is a test ticket response",
 		},
 		{
-			name:     "Quoted text inside code block",
-			input:    "```\n\"Hello World\"\n```",
-			expected: "Hello World",
+			name: "Single backtick wrapping inline text",
+			input: "`This is a test ticket response`",
+			expected: "This is a test ticket response",
 		},
 		{
-			name:     "Clean response",
-			input:    "This is a clean response.",
-			expected: "This is a clean response.",
+			name: "Code block without specified language",
+			input: "```\nIssue has been resolved and verified.\n```",
+			expected: "Issue has been resolved and verified.",
+		},
+		{
+			name: "Intro Response: header",
+			input: "Response:\nDear Customer, your ticket #1024 has been resolved.",
+			expected: "Dear Customer, your ticket #1024 has been resolved.",
+		},
+		{
+			name: "Outro with Feel free to ask",
+			input: "Hello Team, the build is ready.\n\nFeel free to ask if you have any questions.",
+			expected: "Hello Team, the build is ready.",
+		},
+		{
+			name: "Plain multiline text without wrappers",
+			input: "Dear User,\n\nWe have updated your account balance.\n\nRegards,\nFinance Team",
+			expected: "Dear User,\n\nWe have updated your account balance.\n\nRegards,\nFinance Team",
 		},
 	}
 
