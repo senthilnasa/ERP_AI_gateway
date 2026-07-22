@@ -175,6 +175,12 @@ Stress tests the AI Gateway by sending 50 simultaneous parallel requests with 50
 ./scripts/benchmark_50_concurrent.sh qwen2.5:0.5b
 ```
 
+### 6. `scripts/install_startup_service.sh` (Automatic Startup Service Installer)
+Installs and enables the gateway to automatically launch on system boot (Systemd service daemon on Linux, LaunchAgent on macOS):
+```bash
+./scripts/install_startup_service.sh
+```
+
 ---
 
 ## 🔐 Git & Configuration Security (`.gitignore`)
