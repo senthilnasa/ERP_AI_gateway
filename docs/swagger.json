@@ -1,11 +1,19 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "OneERP Enterprise AI Gateway API",
+    "title": "ERP Enterprise AI Gateway API",
     "description": "Production-ready enterprise AI gateway for ERP applications featuring multi-server Ollama Least-in-Flight load balancing, profile plugin architecture, prompt rendering, and stubbed future feature APIs.",
     "version": "1.0.0"
   },
   "servers": [
+    {
+      "url": "https://oneerpaigateway.krea.edu.in",
+      "description": "Production Server"
+    },
+    {
+      "url": "/",
+      "description": "Current Server (Relative Path)"
+    },
     {
       "url": "http://localhost:8080",
       "description": "Local Development Server"

@@ -40,7 +40,7 @@ func (s *SwaggerController) ServeUI(c *gin.Context) {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>OneERP AI Gateway - Swagger API Docs</title>
+  <title>ERP AI Gateway - Swagger API Docs</title>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css" />
   <style>
     html { box-sizing: border-box; overflow-y: scroll; }
