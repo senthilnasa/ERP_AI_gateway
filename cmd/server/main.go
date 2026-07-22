@@ -88,6 +88,7 @@ func main() {
 	swaggerCtrl := controller.NewSwaggerController("docs/swagger.json")
 
 	// Public / Operational Endpoints
+	router.GET("/favicon.ico", controller.HandleFavicon)
 	router.GET("/health", healthCtrl.HealthCheck)
 	router.GET("/version", healthCtrl.Version)
 	router.GET("/profiles", healthCtrl.ListProfiles)

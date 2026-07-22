@@ -52,6 +52,7 @@ func setupTestRouter(t *testing.T) *gin.Engine {
 	futureCtrl := NewFutureStubsController()
 	swaggerCtrl := NewSwaggerController("../../docs/swagger.json")
 
+	r.GET("/favicon.ico", HandleFavicon)
 	r.GET("/health", healthCtrl.HealthCheck)
 	r.GET("/version", healthCtrl.Version)
 	r.GET("/profiles", healthCtrl.ListProfiles)
@@ -137,6 +138,21 @@ func TestNotFoundHandler(t *testing.T) {
 	}
 	if !strings.Contains(w.Body.String(), "NOT_FOUND") {
 		t.Errorf("expected JSON NOT_FOUND code, got %s", w.Body.String())
+	}
+}
+
+func TestFaviconHandler(t *testing.T) {
+	router := setupTestRouter(t)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/favicon.ico", nil)
+	router.ServeHTTP(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("expected 200 OK for /favicon.ico, got %d", w.Code)
+	}
+	if w.Header().Get("Content-Type") != "image/svg+xml" {
+		t.Errorf("expected image/svg+xml Content-Type, got %s", w.Header().Get("Content-Type"))
 	}
 }
 

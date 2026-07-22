@@ -119,3 +119,26 @@ func HandleNotFound(c *gin.Context) {
 
 	c.Data(http.StatusNotFound, "text/html; charset=utf-8", []byte(Generic404HTML))
 }
+
+const FaviconSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#grad)"/>
+  <path d="M32 16 L44 24 L44 40 L32 48 L20 40 L20 24 Z" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="32" cy="32" r="6" fill="#ffffff"/>
+  <circle cx="32" cy="16" r="3.5" fill="#60a5fa"/>
+  <circle cx="44" cy="24" r="3.5" fill="#60a5fa"/>
+  <circle cx="44" cy="40" r="3.5" fill="#60a5fa"/>
+  <circle cx="32" cy="48" r="3.5" fill="#60a5fa"/>
+  <circle cx="20" cy="40" r="3.5" fill="#60a5fa"/>
+  <circle cx="20" cy="24" r="3.5" fill="#60a5fa"/>
+</svg>`
+
+func HandleFavicon(c *gin.Context) {
+	c.Header("Cache-Control", "public, max-age=86400")
+	c.Data(http.StatusOK, "image/svg+xml", []byte(FaviconSVG))
+}
