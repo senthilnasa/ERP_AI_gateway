@@ -18,7 +18,7 @@ prompt:
 
 llm:
   provider: "ollama" # "ollama" or "mock"
-  default_model: "qwen3:8b"
+  default_model: "qwen3.5"
   load_balancing_strategy: "least_in_flight" # "least_in_flight" or "round_robin"
 
   # Multi-server Ollama configuration for load balancing
