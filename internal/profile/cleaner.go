@@ -6,6 +6,10 @@ import (
 )
 
 var (
+	// Regex matching <think> ... </think> reasoning blocks
+	thinkBlockRegex = regexp.MustCompile("(?s)<think>.*?</think>")
+	thinkInnerRegex = regexp.MustCompile("(?s)<think>(.*?)</think>")
+
 	// Regex matching code blocks ```[lang]\n ... ```
 	codeBlockRegex = regexp.MustCompile("(?s)```(?:[a-zA-Z0-9_-]+)?\\s*\n?(.*?)\n?```")
 
@@ -20,9 +24,23 @@ var (
 	}
 )
 
-// CleanLLMOutput strips code fences, conversational intro/outro lines, and enclosing quotes/formatting from raw LLM output.
+// CleanLLMOutput strips thinking tags, code fences, conversational intro/outro lines, and enclosing quotes/formatting from raw LLM output.
 func CleanLLMOutput(raw string) string {
 	cleaned := strings.TrimSpace(raw)
+
+	// 0. Handle <think>...</think> blocks from reasoning models (e.g. Qwen 3.5 / DeepSeek R1)
+	if strings.Contains(cleaned, "<think>") {
+		strippedThink := strings.TrimSpace(thinkBlockRegex.ReplaceAllString(cleaned, ""))
+		if strippedThink != "" {
+			cleaned = strippedThink
+		} else {
+			// If stripping <think> leaves nothing, extract the inner text of <think>
+			matches := thinkInnerRegex.FindStringSubmatch(cleaned)
+			if len(matches) > 1 {
+				cleaned = strings.TrimSpace(matches[1])
+			}
+		}
+	}
 
 	// 1. Extract content inside code block if present
 	matches := codeBlockRegex.FindStringSubmatch(cleaned)

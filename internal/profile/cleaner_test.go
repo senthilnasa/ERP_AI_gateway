@@ -18,6 +18,17 @@ func TestCleanLLMOutputEdgeCases(t *testing.T) {
 			expected: "This is test ticket and I'm closing this",
 		},
 		{
+			name: "Reasoning model with <think> block before response",
+			input: "<think>\nThe user wants a polite rewrite of closing ticket.\n</think>\n\n" +
+				"Dear Customer, this is a test ticket and I am closing this.",
+			expected: "Dear Customer, this is a test ticket and I am closing this.",
+		},
+		{
+			name: "Reasoning model outputting only inside <think> block",
+			input:    "<think>This is a test ticket and I am closing this.</think>",
+			expected: "This is a test ticket and I am closing this.",
+		},
+		{
 			name: "Triple quotes enclosure",
 			input: "Sure, here is the text:\n\n" +
 				"\"\"\"This is a test ticket response\"\"\"\n\n" +
@@ -25,28 +36,28 @@ func TestCleanLLMOutputEdgeCases(t *testing.T) {
 			expected: "This is a test ticket response",
 		},
 		{
-			name: "Single backtick wrapping inline text",
-			input: "`This is a test ticket response`",
+			name:     "Single backtick wrapping inline text",
+			input:    "`This is a test ticket response`",
 			expected: "This is a test ticket response",
 		},
 		{
-			name: "Code block without specified language",
-			input: "```\nIssue has been resolved and verified.\n```",
+			name:     "Code block without specified language",
+			input:    "```\nIssue has been resolved and verified.\n```",
 			expected: "Issue has been resolved and verified.",
 		},
 		{
-			name: "Intro Response: header",
-			input: "Response:\nDear Customer, your ticket #1024 has been resolved.",
+			name:     "Intro Response: header",
+			input:    "Response:\nDear Customer, your ticket #1024 has been resolved.",
 			expected: "Dear Customer, your ticket #1024 has been resolved.",
 		},
 		{
-			name: "Outro with Feel free to ask",
-			input: "Hello Team, the build is ready.\n\nFeel free to ask if you have any questions.",
+			name:     "Outro with Feel free to ask",
+			input:    "Hello Team, the build is ready.\n\nFeel free to ask if you have any questions.",
 			expected: "Hello Team, the build is ready.",
 		},
 		{
-			name: "Plain multiline text without wrappers",
-			input: "Dear User,\n\nWe have updated your account balance.\n\nRegards,\nFinance Team",
+			name:     "Plain multiline text without wrappers",
+			input:    "Dear User,\n\nWe have updated your account balance.\n\nRegards,\nFinance Team",
 			expected: "Dear User,\n\nWe have updated your account balance.\n\nRegards,\nFinance Team",
 		},
 	}
