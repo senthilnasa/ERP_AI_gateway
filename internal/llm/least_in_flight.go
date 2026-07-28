@@ -193,8 +193,10 @@ func (p *MultiServerOllamaProvider) executeOnNode(ctx context.Context, node *Oll
 		Prompt: prompt,
 		Stream: false,
 		Options: map[string]any{
-			"temperature": 0.2,
+			"temperature": 0.1,
 			"top_p":       0.9,
+			"num_predict": 512,
+			"num_ctx":     2048,
 		},
 	}
 
