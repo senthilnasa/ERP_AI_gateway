@@ -85,3 +85,16 @@ func CleanLLMOutput(raw string) string {
 
 	return strings.TrimSpace(cleaned)
 }
+
+// AppendSignatureIfMissing checks if the signature is provided and appends it to text if not already present.
+func AppendSignatureIfMissing(text string, signature string) string {
+	sig := strings.TrimSpace(signature)
+	if sig == "" {
+		return text
+	}
+	cleaned := strings.TrimSpace(text)
+	if !strings.Contains(strings.ToLower(cleaned), strings.ToLower(sig)) {
+		cleaned = cleaned + "\n\n" + sig
+	}
+	return cleaned
+}

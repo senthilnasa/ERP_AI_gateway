@@ -71,3 +71,21 @@ func TestCleanLLMOutputEdgeCases(t *testing.T) {
 		})
 	}
 }
+
+func TestAppendSignatureIfMissing(t *testing.T) {
+	text := "Dear Customer, your request has been approved."
+	sig := "Best regards,\nIT Helpdesk Team"
+
+	res := AppendSignatureIfMissing(text, sig)
+	expected := "Dear Customer, your request has been approved.\n\nBest regards,\nIT Helpdesk Team"
+	if res != expected {
+		t.Errorf("AppendSignatureIfMissing() = %q, want %q", res, expected)
+	}
+
+	// Should not duplicate if signature is already in text
+	alreadyIncluded := "Dear Customer,\n\nBest regards,\nIT Helpdesk Team"
+	res2 := AppendSignatureIfMissing(alreadyIncluded, sig)
+	if res2 != alreadyIncluded {
+		t.Errorf("AppendSignatureIfMissing() duplicated signature: got %q, want %q", res2, alreadyIncluded)
+	}
+}

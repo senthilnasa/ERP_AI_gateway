@@ -73,6 +73,10 @@ func (s *AIService) ProcessWrite(ctx context.Context, req *models.WriteRequest) 
 		return nil, fmt.Errorf("response parsing error: %w", err)
 	}
 
+	if req.Options.Signature != "" {
+		finalResult = profile.AppendSignatureIfMissing(finalResult, req.Options.Signature)
+	}
+
 	elapsedMs := time.Since(start).Milliseconds()
 
 	resData := &models.WriteResponseData{
