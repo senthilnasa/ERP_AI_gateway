@@ -30,10 +30,11 @@ type OllamaNode struct {
 }
 
 type OllamaGenerateRequest struct {
-	Model   string         `json:"model"`
-	Prompt  string         `json:"prompt"`
-	Stream  bool           `json:"stream"`
-	Options map[string]any `json:"options,omitempty"`
+	Model     string         `json:"model"`
+	Prompt    string         `json:"prompt"`
+	Stream    bool           `json:"stream"`
+	KeepAlive string         `json:"keep_alive,omitempty"`
+	Options   map[string]any `json:"options,omitempty"`
 }
 
 type OllamaGenerateResponse struct {
@@ -189,9 +190,10 @@ func (p *MultiServerOllamaProvider) Generate(ctx context.Context, prompt string,
 
 func (p *MultiServerOllamaProvider) executeOnNode(ctx context.Context, node *OllamaNode, prompt string, model string) (string, error) {
 	reqBody := OllamaGenerateRequest{
-		Model:  model,
-		Prompt: prompt,
-		Stream: false,
+		Model:     model,
+		Prompt:    prompt,
+		Stream:    false,
+		KeepAlive: "24h",
 		Options: map[string]any{
 			"temperature": 0.1,
 			"top_p":       0.9,
